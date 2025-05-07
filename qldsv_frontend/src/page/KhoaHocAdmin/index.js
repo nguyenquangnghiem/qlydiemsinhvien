@@ -13,7 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
   
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -35,6 +35,7 @@ import { api } from "../../api";
   }));
   
   const KhoaHocAdmin = () => {
+    const api = useApi();
     const [students, setStudents] = useState([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,7 +47,7 @@ import { api } from "../../api";
   
     const fetchStudents = async () => {
       try {
-        const response = await api().get("/giaovu/khoahoc");
+        const response = await api.get("/giaovu/khoahoc");
         setStudents(response.data.content);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -56,7 +57,7 @@ import { api } from "../../api";
     const handleDelete = async (id) => {
       if (window.confirm("Bạn có chắc muốn xóa khóa học này?")) {
         try {
-          await api().delete(`/giaovu/khoahoc/add/${id}`);
+          await api.delete(`/giaovu/khoahoc/add/${id}`);
           setStudents(students.filter((sv) => sv.idkhoa !== id));
         } catch (error) {
           console.error("Error deleting student:", error);

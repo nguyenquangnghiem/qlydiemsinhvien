@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const TraLoiDienDan = () => {
-    const user = useSelector(state => state.accountReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+        const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     const [changeSuccess, setChangeSuccess] = useState(false);
     const [noiDung, setNoiDung] = useState();
     const [cautraloi, setCauTraLoi] = useState([]);
@@ -21,7 +23,7 @@ const TraLoiDienDan = () => {
                 if (cauhoiid != null) {
                     e = `${e}?cauhoiId=${cauhoiid}`;
                 }
-                let res = await api().get(e);
+                let res = await api.get(e);
                 setCauTraLoi(res.data);
             } catch (ex) {
                 console.error(ex);
@@ -35,7 +37,7 @@ const TraLoiDienDan = () => {
             if (cauhoiid != null) {
                 ch = `${ch}?cauhoiId=${cauhoiid}`;
             }
-            let res = await api().get(ch);
+            let res = await api.get(ch);
 
             setcauhoi(res.data);
         }catch(e){
@@ -51,9 +53,9 @@ const TraLoiDienDan = () => {
         const process = async () => {
             try {
                 let cauHoiId = q.get("cauhoiId");
-                let res = await api().post(endpoints['themTraLoi'], {
+                let res = await api.post(endpoints['themTraLoi'], {
                     "noiDungTraLoi": noiDung,
-                    "idTaiKhoan": user.idTaiKhoan,
+                    "idTaiKhoan": keycloak?.tokenParsed?.jti,
                     "idCauHoiDienDan": cauHoiId
                 })
             } catch (ex) {

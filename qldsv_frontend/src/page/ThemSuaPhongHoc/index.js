@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 
 const ThemSuaPhongHoc = () => {
 
+    const api = useApi();
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
     const navigate = useNavigate();
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/phonghoc/${id}`);
+            const response = await api.get(`/giaovu/phonghoc/${id}`);
             setStudent(response.data);
         }catch(e){
             console.error(e);
@@ -43,7 +44,7 @@ const ThemSuaPhongHoc = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/phonghoc/add', formData);
+            await api.post('/giaovu/phonghoc/add', formData);
             navigate('/giaovu/phonghoc');
         }catch(e){
             console.error(e);

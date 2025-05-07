@@ -3,10 +3,11 @@ import { Alert, Button, Form } from "react-bootstrap";
 import cookie from "react-cookies";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Apis, { api, endpoints } from "../../api";
+import Apis, { useApi, endpoints } from "../../api";
 import Footer from "../../component/Footer";
 import Header from "../../component/Header";
 const Login = () => {
+    const api = useApi();
   const dispatch = useDispatch();
   const [username, setusername] = useState();
   const [password, setpassword] = useState();
@@ -25,10 +26,10 @@ const Login = () => {
         });
         cookie.save("token", res.data.access_token);
         cookie.save("refresh_token", res.data.refresh_token);
-        let { data } = await api().get(endpoints["current-user"]);
+        let { data } = await api.get(endpoints["current-user"]);
         cookie.save("user", data);
         if (data && data.chucVu && Array.from(data.chucVu).includes("SV")) {
-          let sinhvien = await api().get(endpoints["current-sinhvien"]);
+          let sinhvien = await api.get(endpoints["current-sinhvien"]);
           cookie.save("sinhvien", sinhvien.data);
           dispatch({
             type: "login_sv",
@@ -40,7 +41,7 @@ const Login = () => {
           });
           nav("/home");
         } else {
-          let giangvien = await api().get(endpoints["current-giangvien"]);
+          let giangvien = await api.get(endpoints["current-giangvien"]);
           cookie.save("giangvien", giangvien.data);
           dispatch({
             type: "login_gv",

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { api, endpoints } from "../../api";
+import { useApi, endpoints } from "../../api";
 
 
 const XemDiem = () => {
+    const api = useApi();
     const [DSDiem, setDSDiem] = useState([], null);
     const [DSDiemDaHoc, setDSDiemDaHoc] = useState([], null);
     const [DSDiem1, setDSDiem1] = useState([]);
@@ -16,18 +17,18 @@ const XemDiem = () => {
                 let d = endpoints['DSDiemDaHoc'];
                 let a = endpoints['DiemTrungBinhHe10'];
                 let b = endpoints['DiemTrungBinhHe4'];
-                const response = await api().get(endpoints["current-sinhvien"]);
+                const response = await api.get(endpoints["current-sinhvien"]);
                 const sinhvien = response.data;
                 c = `${c}?SinhVienId=${sinhvien.idSinhVien}`;
                 d = `${d}?SinhVienId=${sinhvien.idSinhVien}`;
                 e = `${e}?SinhVienId=${sinhvien.idSinhVien}`;
                 a = `${a}?SinhVienId=${sinhvien.idSinhVien}`;
                 b = `${b}?SinhVienId=${sinhvien.idSinhVien}`;
-                let res5 = await api().get(d);
-                let res4 = await api().get(c);
-                let res1 = await api().get(e);
-                let res2 = await api().get(a);
-                let res3 = await api().get(b);
+                let res5 = await api.get(d);
+                let res4 = await api.get(c);
+                let res1 = await api.get(e);
+                let res2 = await api.get(a);
+                let res3 = await api.get(b);
                 console.log(res1.data);
                 setDSDiemDaHoc(res5.data);
                 setDSDiem1(res4.data);

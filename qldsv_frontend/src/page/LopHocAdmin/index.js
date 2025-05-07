@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
   
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,6 +36,7 @@ import { api } from "../../api";
   }));
   
   const LopHocAdmin = () => {
+    const api = useApi();
     const [students, setStudents] = useState([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -47,7 +48,7 @@ import { api } from "../../api";
   
     const fetchStudents = async () => {
       try {
-        const response = await api().get("/giaovu/lophoc");
+        const response = await api.get("/giaovu/lophoc");
         setStudents(response.data.content);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -57,7 +58,7 @@ import { api } from "../../api";
     const handleDelete = async (id) => {
       if (window.confirm("Bạn có chắc muốn xóa lớp học này?")) {
         try {
-          await api().delete(`/giaovu/lophoc/add/${id}`);
+          await api.delete(`/giaovu/lophoc/add/${id}`);
           setStudents(students.filter((sv) => sv.idLopHoc !== id));
         } catch (error) {
           console.error("Error deleting student:", error);

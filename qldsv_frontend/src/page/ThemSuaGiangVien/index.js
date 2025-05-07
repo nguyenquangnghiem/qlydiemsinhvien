@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api";
+import { useApi } from "../../api";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from 'dayjs';
 
 const ThemSuaGiangVien = () => {
+    const api = useApi();
 
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
@@ -11,7 +12,7 @@ const ThemSuaGiangVien = () => {
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/giangvien/${id}`);
+            const response = await api.get(`/giaovu/giangvien/${id}`);
             setStudent(response.data);
         }catch(e){
             console.error(e);
@@ -54,7 +55,7 @@ const ThemSuaGiangVien = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/giangvien/add', formData);
+            await api.post('/giaovu/giangvien/add', formData);
             navigate('/giaovu/giangvien');
         }catch(e){
             console.error(e);

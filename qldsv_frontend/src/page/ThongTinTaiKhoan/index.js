@@ -1,15 +1,19 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import cookie from "react-cookies";
-import { api, endpoints } from "../../api";
+import { useDispatch } from "react-redux";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 import MySpinner from "../../component/MySpinner";
-import { useDispatch, useSelector } from "react-redux";
 
 
 const Thongtintaikhoan = () => {
 
+    const api = useApi();
     const dispatch = useDispatch();
-    const user = useSelector(state => state.accountReducer);
+    const keycloak = useContext(KeycloakContext);
+    console.log(keycloak);
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     const [sinhvien, setSinhvien] = useState(null);
     const [loading, setLoading] = useState(false);
     const [pass, setPass] = useState(true);
@@ -18,23 +22,22 @@ const Thongtintaikhoan = () => {
 
 
     const [taiKhoan, setTaiKhoan] = useState({
-        "idTaiKhoan": user? user.id : null,
-        "tenTaiKhoan": user? user.username : null,
-        "matKhau": user? user.passwowrd : null,
-        "chucVu": user? Array.from(user.chucVu).at(0) : null,
+        "idTaiKhoan": keycloak?.tokenParsed?.jti || null,
+        "tenTaiKhoan": keycloak?.tokenParsed?.preferred_username || null,
+        "matKhau": null,
+        "chucVu": roles[0],
     });
 
     useEffect(() => {
         async function getInformationSinhVien(){
             try{
                 let url;
-                if(Array.from(user.chucVu).includes('SV')){
+                if(roles.includes('SV')){
                     url = endpoints['current-sinhvien']
                 } else {
                     url = endpoints['current-giangvien'];
                 }
-                const response = await api().get(url);
-                console.log(response.data);
+                const response = await api.get(url);
                 setSinhvien(response.data);
             } catch(e){
                 console.error(e);
@@ -59,9 +62,9 @@ const Thongtintaikhoan = () => {
                 form.append("avatar", avatar.current.files[0]);
 
                 setLoading(true)
-                let res = await api().post(endpoints['udateImage'], form);
+                let res = await api.post(endpoints['udateImage'], form);
 
-                let { data } = await api().get(endpoints['current-user']);
+                let { data } = await api.get(endpoints['current-user']);
                 cookie.remove("user");
                 cookie.save("user", data);
                 dispatch({
@@ -89,7 +92,7 @@ const Thongtintaikhoan = () => {
         <div class="contend">
             <div class="info-user">
                 <div class="info-title-user">
-                    {user === null || user?.id?.image === null ? <p class="info-user-image"><i class="fa-solid fa-user icon-padding"></i></p> : <div class="info-user-image-2" ><img class="img-user-avatar" src={user?.idTaiKhoan?.image} alt="Ảnh đại diện" /></div>}
+                    {keycloak === null || keycloak?.id?.image === null ? <p class="info-user-image"><i class="fa-solid fa-user icon-padding"></i></p> : <div class="info-user-image-2" ><img class="img-user-avatar" src={keycloak?.idTaiKhoan?.image} alt="Ảnh đại diện" /></div>}
 
                     <Form onSubmit={updateImage}>
                         <Form.Group className="mb-3">
@@ -122,7 +125,7 @@ const Thongtintaikhoan = () => {
                         <span class="info-user-text">Số Điện Thoại</span>
                         <span class="info-user-text2">{sinhvien? sinhvien.soDienThoai : ""}</span>
                     </div>
-                    {user.chucVu.tenloaitaikhoan === 'ROLE_SV'?
+                    {roles.includes('SV')?
                     <>
                     <div class="info-user-texts">
                         <span class="info-user-text">Khóa Học</span>

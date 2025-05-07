@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 import dayjs from "dayjs";
 
 const ThemSuaHocKy = () => {
 
+    const api = useApi();
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
     const [classList, setClassList] = useState([]);
@@ -13,7 +14,7 @@ const ThemSuaHocKy = () => {
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/hocky/${id}`);
+            const response = await api.get(`/giaovu/hocky/${id}`);
             setStudent(response.data);
         }catch(e){
             console.error(e);
@@ -22,7 +23,7 @@ const ThemSuaHocKy = () => {
 
     async function getLopHocList(){
         try{
-            const response = await api().get("/api/dslophoc/");
+            const response = await api.get("/api/dslophoc/");
             setClassList(response.data.content);
         }catch(e){
             console.error(e);
@@ -31,7 +32,7 @@ const ThemSuaHocKy = () => {
 
     async function getLoaiHocKyList(){
         try{
-            const response = await api().get("/giaovu/loaihocky");
+            const response = await api.get("/giaovu/loaihocky");
             setLoaiHocKyList(response.data);
         }catch(e){
             console.error(e);
@@ -102,7 +103,7 @@ const ThemSuaHocKy = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/hocky/add', formData);
+            await api.post('/giaovu/hocky/add', formData);
             navigate('/giaovu/hocky');
         }catch(e){
             console.error(e);

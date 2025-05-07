@@ -1,17 +1,18 @@
 import dayjs from 'dayjs';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
-import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { api, endpoints } from "../../api";
+import { useLocation } from 'react-router-dom';
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from '../../component/Keycloak/keycloakProvider';
 
 function formatDate(date) {
   return dayjs(date).format('DD/MM/YYYY');
 }
 
 const DangKyMonHoc = () => {
-  const user = useSelector(state => state.accountReducer);
-  const sinhvien = useSelector(state => state.sinhVienReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
   const [DSmonHocHocKy, setMonHocHocKy] = useState([]);
   const [DSmonHocDangKy, setMonHocDangKy] = useState([]);
   const [success, setSuccess] = useState(false);
@@ -31,12 +32,12 @@ const DangKyMonHoc = () => {
     try {
       let e = endpoints["listMonHocDangKi"];
       let formData = new FormData();
-      formData.append("tenTaiKhoan", user.tenTaiKhoan);
-      formData.append("idTaiKhoan", user.idTaiKhoan);
+      formData.append("tenTaiKhoan", keycloak?.tokenParsed?.preferred_username);
+      formData.append("idTaiKhoan", keycloak?.tokenParsed?.jti);
       if (kw !== "") {
         formData.append("tenMonHoc", kw);
       }
-      let res1 = await api().post(e, formData);
+      let res1 = await api.post(e, formData);
       setMonHocHocKy(res1.data);
     } catch (e) {
       console.error(e);
@@ -46,8 +47,8 @@ const DangKyMonHoc = () => {
     try {
       //láy danh sách môn học sinh viene đangư ký
       let a = endpoints["listMonHocSVDangKy"];
-      a = `${a}?idSinhVien=${sinhvien.idTaiKhoan}`;
-      let res2 = await api().get(a);
+      a = `${a}?idSinhVien=${keycloak.tokenParsed.jti}`;
+      let res2 = await api.get(a);
       setMonHocDangKy(res2.data);
     } catch (ex) {
       console.error(ex);
@@ -58,13 +59,13 @@ const DangKyMonHoc = () => {
     evt.preventDefault();
     const process = async () => {
       let e = endpoints["dangKyMonHoc"];
-      e = `${e}?IdSinhVien=${sinhvien.idTaiKhoan}&IdMonHoc=${idMonHoc}`;
-      let res = await api().post(e, {
+      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.jti}&IdMonHoc=${idMonHoc}`;
+      let res = await api.post(e, {
         idMonHoc: idMonHoc,
-        idSinhVien: sinhvien.idTaiKhoan,
+        idSinhVien: keycloak?.tokenParsed?.jti,
       });
       e = endpoints["getMonHocById"] + `?idMonHocHocKy=${idMonHoc}`;
-      await api().get(e);
+      await api.get(e);
       console.log(res.data);
       if (res.data === "Success") {
         setSuccess(true);
@@ -78,8 +79,8 @@ const DangKyMonHoc = () => {
     evt.preventDefault();
     const process = async () => {
       let e = endpoints["huyDangKyMonHoc"];
-      e = `${e}?IdSinhVien=${sinhvien.idTaiKhoan}&IdMonHoc=${idMonHoc}`;
-      let res = await api().delete(e);
+      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.jti}&IdMonHoc=${idMonHoc}`;
+      let res = await api.delete(e);
 
       setSuccess(true);
       if (res.status === 201) {
@@ -97,7 +98,7 @@ const DangKyMonHoc = () => {
     const process = async () => {
       let e = endpoints["thanhToanHocPhi"];
       e = `${e}?hocPhi=${hocphi}`;
-      let res = await api().get(e);
+      let res = await api.get(e);
       if (/^https?:\/\//.test(res.data)) {
         // Open a new window with the URL
         window.open(res.data, "_blank");
@@ -124,10 +125,10 @@ const DangKyMonHoc = () => {
         order_id,
         transactionNo,
         trans_date,
-        idSinhVien: sinhvien.idTaiKhoan,
+        idSinhVien: keycloak?.tokenParsed?.jti,
       };
 
-      api().post("/api/queryTransactionStatus/", null, {
+      api.post("/api/queryTransactionStatus/", null, {
         params: payload
       })
       .then(res => {

@@ -13,7 +13,7 @@ import {
   import { useEffect, useState } from "react";
   import { FaEdit, FaTrashAlt } from "react-icons/fa";
   import { Link } from "react-router-dom";
-  import { api } from "../../api";
+  import { useApi } from "../../api";
   
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -35,6 +35,7 @@ import {
   }));
   
   const KhoaDaoTaoAdmin = () => {
+    const api = useApi();
     const [students, setStudents] = useState([]);
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,7 +47,7 @@ import {
   
     const fetchStudents = async () => {
       try {
-        const response = await api().get("/giaovu/khoadaotao");
+        const response = await api.get("/giaovu/khoadaotao");
         setStudents(response.data.content);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -56,7 +57,7 @@ import {
     const handleDelete = async (id) => {
       if (window.confirm("Bạn có chắc muốn xóa khoa đào tạo này?")) {
         try {
-          await api().delete(`/giaovu/khoadaotao/add/${id}`);
+          await api.delete(`/giaovu/khoadaotao/add/${id}`);
           setStudents(students.filter((sv) => sv.idKhoaDaoTao !== id));
         } catch (error) {
           console.error("Error deleting student:", error);

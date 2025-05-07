@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 const Themchude = () => {
-    const user = useSelector(state => state.accountReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+        const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     const [noiDung, setNoiDung] = useState();
     let nav = useNavigate();
     const [q] = useSearchParams();
@@ -18,7 +20,7 @@ const Themchude = () => {
             let cauhoiid = q.get("cauhoiId");
             if (cauhoiid != null) {
                 ch = `${ch}?cauhoiId=${cauhoiid}`;
-                let res = await api().get(ch);
+                let res = await api.get(ch);
                 setNoiDung(res.data[0]);
             }
         }catch(e){
@@ -36,9 +38,9 @@ const Themchude = () => {
         const formattedTime = `${currentDate.getHours().toString().padStart(2, '0')}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
         const process = async () => {
             try {
-                let res = await api().post(endpoints['themCauHoi'], {
+                let res = await api.post(endpoints['themCauHoi'], {
                     "noiDungCauHoi": noiDung,
-                    "idTaiKhoan": user.idTaiKhoan,
+                    "idTaiKhoan": keycloak?.tokenParsed?.jti,
                     "ngayTao": `${formattedDate} ${formattedTime}`,
                     "idCauHoiDienDan": cauhoiid,
                 })

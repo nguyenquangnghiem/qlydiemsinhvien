@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const DanhSachMonDaKhoa = () => {
-  const user = useSelector((state) => state.accountReducer);
+    const api = useApi();
+  const keycloak = useContext(KeycloakContext);
+            const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
   const [monHoc, setMonHoc] = useState([]);
 
   useEffect(() => {
     const loadMonHoc = async () => {
       try {
         let e = endpoints["DSMHDaDay"];
-        e = `${e}?taiKhoanId=${user ? user.id : ""}`;
-        let res = await api().get(e);
+        e = `${e}?taiKhoanId=${keycloak ? keycloak?.tokenParsed?.jti : ""}`;
+        let res = await api.get(e);
         setMonHoc(res.data);
       } catch (e) {
         console.error(e);

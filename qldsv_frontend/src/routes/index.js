@@ -1,5 +1,7 @@
-import { useSelector } from "react-redux";
+import { useContext } from "react";
 import { Navigate, useRoutes } from "react-router-dom";
+import AuthRedirect from "../component/AuthRedirect";
+import { KeycloakContext } from "../component/Keycloak/keycloakProvider";
 import LayoutAdmin from "../layout/LayoutAdmin";
 import LayoutUser from "../layout/LayoutUser";
 import CapTaiKhoanAdmin from "../page/CapTaiKhoanAdmin";
@@ -46,8 +48,10 @@ import TimSinhVien from "../page/TimSinhVien";
 import XemDiem from "../page/XemDiem";
 
 const Routes = () => {
-    const user = useSelector(state => state.accountReducer);
-    console.log(user)
+    const keycloak = useContext(KeycloakContext);
+    
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
+    console.log(roles)
     const routes = useRoutes([
         {
             path: '/',
@@ -55,7 +59,7 @@ const Routes = () => {
             children: [
                 {
                     index: true,
-                    element: user? (Array.from(user.chucVu).includes('GVU')? <Navigate to="/giaovu/home"/> : <Navigate to="/home"/>) : <Navigate to="/auth-option" replace />
+                    element: <AuthRedirect keycloak={keycloak} roles={roles}/>
                 },
                 {
                     path: '/home',
@@ -141,7 +145,7 @@ const Routes = () => {
         },
         {
             path: '/giaovu',
-            element: user? (Array.from(user.chucVu).includes('GVU') ? <LayoutAdmin/> : <Navigate to="/home" replace />) : <Navigate to="/auth-option" replace />,
+            element: (roles.includes('GVU') ? <LayoutAdmin/> : <Navigate to="/home" replace />),
             children: [
                 {
                     path: '/giaovu/home',
@@ -294,6 +298,9 @@ const Routes = () => {
             ]
         }
     ])
+    if (!keycloak) {
+        return <div>Loading...</div>; // Hoặc có thể xử lý một cách khác khi chưa có keycloak
+    }
     return routes;
 }
 

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
-import { api } from "../../api";
+import { useApi } from "../../api";
     
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
       [`&.${tableCellClasses.head}`]: {
@@ -33,6 +33,7 @@ import { api } from "../../api";
     }));
     
     const DanhSachTaiKhoanAdmin = () => {
+        const api = useApi();
       const [students, setStudents] = useState([]);
       const [search, setSearch] = useState("");
       const [currentPage, setCurrentPage] = useState(1);
@@ -44,7 +45,7 @@ import { api } from "../../api";
     
       const fetchStudents = async () => {
         try {
-          const response = await api().get("/giaovu/taikhoan");
+          const response = await api.get("/giaovu/taikhoan");
           setStudents(response.data);
         } catch (error) {
           console.error("Error fetching students:", error);

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import * as React from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { apiLogout } from "../../api";
+import { keycloakService } from "../Keycloak";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,11 +41,7 @@ const HeaderAdmin = () => {
 
   async function handleLogout(){
     try{
-        const response = await apiLogout().post("/api/logout");
-        console.log(response);
-        dispatch({type: 'logout_gvu'});
-        dispatch({type: 'logout'});
-        navigate('/auth-option');
+        keycloakService.logout();
     }catch(e){
         console.error(e);
     }

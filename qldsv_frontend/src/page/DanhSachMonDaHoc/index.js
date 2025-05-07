@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import { api, endpoints } from "../../api";
-import { useSelector } from "react-redux";
+import { useContext, useEffect, useState } from "react";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 
 const DanhSachMonDaHoc = () => {
+    const api = useApi();
 
-    const sinhvien = useSelector(state => state.sinhVienReducer);
+    const keycloak = useContext(KeycloakContext);
+          const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
 
     const [DSDiemDaHoc, setDSDiemDaHoc] = useState([], null);
 
@@ -16,9 +18,9 @@ const DanhSachMonDaHoc = () => {
                 let d = endpoints['DSDiemDaHoc'];
 
 
-                d = `${d}?SinhVienId=${sinhvien.idSinhVien}`;
+                d = `${d}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
 
-                let res5 = await api().get(d);
+                let res5 = await api.get(d);
 
                 setDSDiemDaHoc(res5.data);
 

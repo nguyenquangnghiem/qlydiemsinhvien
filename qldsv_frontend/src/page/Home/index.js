@@ -1,12 +1,14 @@
-import { useSelector } from "react-redux";
+import { useContext } from "react";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 import HomeGV from "../HomeGV";
 import HomeSV from "../HomeSV";
 
 const Home = () => {
-    const giangvien = useSelector(state => state.giangVienReducer);
+    const keycloak = useContext(KeycloakContext);
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     return (
         <>
-            {giangvien? <HomeGV/> : <HomeSV/>}
+            {roles.includes('GV')? <HomeGV/> : <HomeSV/>}
             {/* <HomeGV/> */}
         </>
     );

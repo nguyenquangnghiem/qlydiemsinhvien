@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-bootstrap";
 import { Link, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { useApi, endpoints } from "../../api";
 
 const TimSinhVien = () => {
+    const api = useApi();
     const [DSSinhVien, setDSSinhVien] = useState([]);
     const [q] = useSearchParams();
     useEffect(() => {
@@ -15,12 +16,12 @@ const TimSinhVien = () => {
                 if (idGiangVien !== null) {
                     if (tenSinhVien !== null) {
                         e = `${e}?idGiangVien=${idGiangVien}&tenSinhVien=${tenSinhVien}`;
-                        let res = await api().post(e);
+                        let res = await api.post(e);
                         setDSSinhVien(res.data);
                     }
                     else {
                         e = `${e}?idGiangVien=${idGiangVien}`;
-                        let res = await api().post(e);
+                        let res = await api.post(e);
                         setDSSinhVien(res.data);
                     }
                 }

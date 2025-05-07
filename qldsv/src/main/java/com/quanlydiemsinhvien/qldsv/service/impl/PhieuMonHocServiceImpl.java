@@ -4,13 +4,15 @@
  */
 package com.quanlydiemsinhvien.qldsv.service.impl;
 
-import com.quanlydiemsinhvien.qldsv.pojo.MonhocHocky;
-import com.quanlydiemsinhvien.qldsv.repository.MonhocHockyRepository;
-import com.quanlydiemsinhvien.qldsv.service.PhieuMonHocService;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.quanlydiemsinhvien.qldsv.pojo.MonhocHocky;
+import com.quanlydiemsinhvien.qldsv.repository.MonhocHockyRepository;
+import com.quanlydiemsinhvien.qldsv.service.PhieuMonHocService;
 
 /**
  *
@@ -60,10 +62,10 @@ public class PhieuMonHocServiceImpl implements PhieuMonHocService {
 
     @Override
     public boolean updatePhieuMHHK(MonhocHocky mh) {
-        try{
+        try {
             monhocHockyRepository.save(mh);
             return true;
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

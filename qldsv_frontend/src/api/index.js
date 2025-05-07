@@ -1,5 +1,6 @@
 import axios from "axios";
-import cookie from "react-cookies";
+import { useContext } from "react";
+import { KeycloakContext } from "../component/Keycloak/keycloakProvider";
 
 export const endpoints = {
     "cauHois": `/api/cauhoi/`,
@@ -47,25 +48,16 @@ export const endpoints = {
 
 }
 
-export const api = () => {
-    return axios.create({
-        baseURL: "http://localhost:8080",
-        headers: {
-            "Authorization": `Bearer ${cookie.load("token")}`
-        }
-    })
-}
+export const useApi = () => {
+  const keycloak = useContext(KeycloakContext);
 
-export const apiLogout = () => {
-    return axios.create({
-        baseURL: "http://localhost:8080",
-        headers: {
-            "Authorization": `Bearer ${cookie.load("token")}`,
-            "Logout-Auth": `Bearer ${cookie.load("refresh_token")}`
-        }
-    })
-}
-
+  return axios.create({
+    baseURL: "http://localhost:8080",
+    headers: {
+      Authorization: `Bearer ${keycloak?.token}`
+    }
+  });
+};
 export default axios.create({
     baseURL: "http://localhost:8080"
 })

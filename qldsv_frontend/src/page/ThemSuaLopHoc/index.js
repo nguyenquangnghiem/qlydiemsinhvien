@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 
 const ThemSuaLopHoc = () => {
 
+    const api = useApi();
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
     const [khoaList, setKhoaList] = useState([]);
@@ -13,7 +14,7 @@ const ThemSuaLopHoc = () => {
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/lophoc/${id}`);
+            const response = await api.get(`/giaovu/lophoc/${id}`);
             setStudent(response.data);
             setFormData(prev => ({
                 ...prev,
@@ -30,7 +31,7 @@ const ThemSuaLopHoc = () => {
 
     async function getKhoaHocList(){
         try{
-            const response = await api().get("/giaovu/khoahoc");
+            const response = await api.get("/giaovu/khoahoc");
             setKhoaList(response.data.content);
         } catch(e) {
             console.error(e);
@@ -39,7 +40,7 @@ const ThemSuaLopHoc = () => {
 
     async function getHeDaoTaoList(){
         try{
-            const response = await api().get("/giaovu/hedaotao");
+            const response = await api.get("/giaovu/hedaotao");
             console.log(response.data);
             setHeDaoTaoList(response.data.content);
         } catch(e) {
@@ -49,7 +50,7 @@ const ThemSuaLopHoc = () => {
 
     async function getNganhDaoTaoList(){
         try{
-            const response = await api().get("/giaovu/nganhdaotao");
+            const response = await api.get("/giaovu/nganhdaotao");
             setNganhDaoTaoList(response.data.content);
         } catch(e) {
             console.error(e);
@@ -78,7 +79,7 @@ const ThemSuaLopHoc = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/lophoc/add', formData);
+            await api.post('/giaovu/lophoc/add', formData);
             navigate('/giaovu/lophoc');
         }catch(e){
             console.error(e);

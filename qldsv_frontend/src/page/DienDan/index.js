@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const DienDan = () => {
-    const user = useSelector(state => state.accountReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     const [cauHois, setCauhois] = useState([]);
     const [reload, setReload] = useState(false);
     let nav = useNavigate();
@@ -12,7 +14,7 @@ const DienDan = () => {
     useEffect(() => {
         const loadCauHoi = async () => {
             try{
-                let res = await api().get(endpoints["cauHois"]);
+                let res = await api.get(endpoints["cauHois"]);
                 setCauhois(res.data);
             }catch(e){
                 console.error(e);
@@ -29,7 +31,7 @@ const DienDan = () => {
         if (confirmed) {
             let ch = endpoints["deleteCauHoi"];
             ch = `${ch}?idCauHoiDienDan=${id}`;
-            await api().delete(ch);
+            await api.delete(ch);
             nav("/diendan");
             setReload(pre => !pre);
         } else {
@@ -78,12 +80,12 @@ const DienDan = () => {
                                 <i class="fa-solid fa-comment-dots icon-padding"></i>Xem Câu
                                 Trả Lời
                             </Link>
-                            {user.id === c?.taiKhoan?.id ? (
+                            {keycloak?.tokenParsed?.jti === c?.taiKhoan?.id ? (
                                 <Link to={k} class="text-contend-link update-text-diendan">
                                     <i class="fa-solid fa-pen-to-square icon-padding"></i>Chỉnh Sửa
                                 </Link>
                             ) : null}
-                            {user.id === c?.taiKhoan?.id ? (
+                            {keycloak?.tokenParsed?.jti === c?.taiKhoan?.id ? (
                                 <a style={{cursor: 'pointer'}} onClick={() => handleDelete(c.idCauHoiDienDan)} class="text-contend-link update-text-diendan">
                                     <i class="fa-solid fa-trash icon-padding"></i>Xóa
                                 </a>

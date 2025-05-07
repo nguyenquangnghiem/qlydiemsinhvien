@@ -4,10 +4,11 @@ import SuccessIcon from '@mui/icons-material/Send';
 import IconButton from '@mui/material/IconButton';
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { useApi, endpoints } from "../../api";
 
 const ChiTietSinhVien = () => {
     
+    const api = useApi();
     const [DSDiem, setDSDiem] = useState([], null);
     const [sinhVien, setSinhVien] =useState([]);
     const [q] = useSearchParams();
@@ -25,9 +26,9 @@ const ChiTietSinhVien = () => {
                 d = `${d}?SinhVienId=${idSinhVien}`;
                 e = `${e}?SinhVienId=${idSinhVien}`;
                 c = `${c}?idSinhVien=${idSinhVien}`
-                let res5 = await api().get(d);
-                let res1 = await api().get(e);
-                let res2 = await api().get(c);
+                let res5 = await api.get(d);
+                let res1 = await api.get(e);
+                let res2 = await api.get(c);
                 setDSDiemDaHoc(res5.data);
                 setDSDiem(res1.data);
                 setSinhVien(res2.data);
@@ -60,7 +61,7 @@ const ChiTietSinhVien = () => {
     async function handEdit(e){
         e.preventDefault();
         try{
-            await api().put(endpoints["editDiem"], editDiemForm);
+            await api.put(endpoints["editDiem"], editDiemForm);
             setAllowEdit(false);
         } catch (e){
             console.error(e);

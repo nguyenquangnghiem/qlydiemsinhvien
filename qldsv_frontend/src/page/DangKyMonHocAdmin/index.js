@@ -3,10 +3,11 @@ import dayjs from "dayjs"; // Thư viện giúp xử lý ngày dễ dàng
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 import "./DangKyMonHocAdmin.css";
 
 const DangKiMonHoc = () => {
+    const api = useApi();
   const { handleSubmit, control, watch, setValue } = useForm();
   const [checkedSubjects, setCheckedSubjects] = useState({});
   const [hocki, setHocKi] = useState();
@@ -20,7 +21,7 @@ const DangKiMonHoc = () => {
 
   async function fetchHocKy(){
     try{
-        const response = await api().get(`/giaovu/hocky/${id}`);
+        const response = await api.get(`/giaovu/hocky/${id}`);
         setHocKi(response.data);
     } catch (e) {
         console.error(e);
@@ -29,7 +30,7 @@ const DangKiMonHoc = () => {
 
   async function fetchMonHoc(){
     try{
-        const response = await api().get(`/giaovu/monhoc`);
+        const response = await api.get(`/giaovu/monhoc`);
         setMonhoc(response.data.content);
     } catch (e) {
         console.error(e);
@@ -38,7 +39,7 @@ const DangKiMonHoc = () => {
 
   async function fetchPhongHoc(){
     try{
-        const response = await api().get(`/giaovu/phonghoc`);
+        const response = await api.get(`/giaovu/phonghoc`);
         setPhonghoc(response.data);
     } catch (e) {
         console.error(e);
@@ -47,7 +48,7 @@ const DangKiMonHoc = () => {
 
   async function fetchGiangVien(){
     try{
-        const response = await api().get(`/giaovu/giangvien`);
+        const response = await api.get(`/giaovu/giangvien`);
         setGiangvien(response.data);
     } catch (e) {
         console.error(e);
@@ -56,8 +57,7 @@ const DangKiMonHoc = () => {
 
   async function fetchMonDaChon(){
     try{
-        const response = await api().get(`/giaovu/monhoc/hocky/${id}`);
-        console.log(response);
+        const response = await api.get(`/giaovu/monhoc/hocky/${id}`);
         setMondachon(response.data);
     } catch (e) {
         console.error(e);
@@ -71,6 +71,7 @@ const DangKiMonHoc = () => {
     fetchGiangVien();
     fetchMonDaChon();
   }, [])
+  console.log(mondachon);
   useEffect(() => {
     const initialCheckedState = {};
     const initialDisabledState = {};
@@ -133,7 +134,7 @@ const DangKiMonHoc = () => {
     console.log(payload);
   
     try{
-      await api().post(`/giaovu/dangkymonhoc/${id}`, payload);
+      await api.post(`/giaovu/dangkymonhoc/${id}`, payload);
       window.alert('Cập nhật thành công!!!')
     } catch (e){
       console.error(e);

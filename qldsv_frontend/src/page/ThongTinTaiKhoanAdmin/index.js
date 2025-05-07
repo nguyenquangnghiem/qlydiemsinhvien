@@ -1,8 +1,10 @@
-import { useSelector } from "react-redux";
+import { useContext } from "react";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const ThongTinTaiKhoanAdmin = () => {
 
-    const giaovu = useSelector(state => state.giaoVuReducer);
+    const keycloak = useContext(KeycloakContext);
+        const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
 
     return (
         <>
@@ -13,17 +15,17 @@ const ThongTinTaiKhoanAdmin = () => {
       <div className="info-user-text-reply">
         <div className="info-user-texts">
           <span className="info-user-text">Họ Tên:</span>
-          <span className="info-user-text2">{giaovu?.tenGiaoVu}</span>
+          <span className="info-user-text2">{keycloak?.tokenParsed?.ho_ten}</span>
         </div>
         <div className="info-user-texts">
           <span className="info-user-text">Giới Tính:</span>
           <span className="info-user-text2">
-            {giaovu?.gioiTinh === 1 ? "Nam" : "Nữ"}
+            {keycloak?.tokenParsed?.gioi_tinh}
           </span>
         </div>
         <div className="info-user-texts">
           <span className="info-user-text">Số Điện Thoại:</span>
-          <span className="info-user-text2">{giaovu?.soDienThoai}</span>
+          <span className="info-user-text2">{keycloak?.tokenParsed?.so_dien_thoai}</span>
         </div>
       </div>
     </div>

@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { api, endpoints } from "../../api";
+import { useContext, useEffect, useState } from "react";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 
 const HomeSV = () => {
-    const sinhvien = useSelector(state => state.sinhVienReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+          const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     const [DSDiem, setDSDiem] = useState([]);
     const [Diem, setDiem] = useState([]);
     const [DiemHe4, setDiemHe4] = useState([]);
@@ -14,12 +16,12 @@ const HomeSV = () => {
                 let e = endpoints['DSDiemTrungBinhHocKy'];
                 let a = endpoints['DiemTrungBinhHe10'];
                 let b = endpoints['DiemTrungBinhHe4'];
-                e = `${e}?SinhVienId=${sinhvien.idSinhVien}`;
-                a = `${a}?SinhVienId=${sinhvien.idSinhVien}`;
-                b = `${b}?SinhVienId=${sinhvien.idSinhVien}`;
-                let res1 = await api().get(e);
-                let res2 = await api().get(a);
-                let res3 = await api().get(b);
+                e = `${e}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
+                a = `${a}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
+                b = `${b}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
+                let res1 = await api.get(e);
+                let res2 = await api.get(a);
+                let res3 = await api.get(b);
                 setDSDiem(res1.data);
                 setDiem(res2.data);
                 setDiemHe4(res3.data);

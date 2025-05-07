@@ -1,10 +1,12 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { api } from "../../api";
+import { useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const ThayDoiMatKhauAdmin = () => {
-
-    const taikhoanAD = useSelector(state => state.accountReducer);
+    const api = useApi();
+    const keycloak = useContext(KeycloakContext);
+        const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
 
     const {
         register,
@@ -15,7 +17,7 @@ const ThayDoiMatKhauAdmin = () => {
       const onSubmit = async (data) => {
         console.log("Dữ liệu gửi đi:", data);
         try {
-            const response = await api().post(`/giaovu/thaydoimatkhau`, data);
+            const response = await api.post(`/giaovu/thaydoimatkhau`, data);
             if(response.status === 200){
                 window.alert('Đổi mật khẩu thành công!!!');
             }
@@ -34,7 +36,7 @@ const ThayDoiMatKhauAdmin = () => {
             <input
               type="hidden"
               {...register("idTaiKhoan")}
-              value={taikhoanAD?.idTaiKhoan || ""}
+              value={keycloak?.tokenParsed?.jti || ""}
             />
     
             <div className="mb-3 mt-3">

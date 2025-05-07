@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 
 const ThemSuaKhoa = () => {
 
+    const api = useApi();
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
     const navigate = useNavigate();
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/khoa/${id}`);
+            const response = await api.get(`/giaovu/khoa/${id}`);
             setStudent(response.data);
         }catch(e){
             console.error(e);
@@ -43,7 +44,7 @@ const ThemSuaKhoa = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/khoa/add', formData);
+            await api.post('/giaovu/khoa/add', formData);
             navigate('/giaovu/khoahoc');
         }catch(e){
             console.error(e);

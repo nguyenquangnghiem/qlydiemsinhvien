@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { api } from "../../api";
+import { useApi } from "../../api";
 import { Pagination } from "@mui/material";
 import {
   Paper,
@@ -37,6 +37,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const SinhVienAdmin = () => {
+    const api = useApi();
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,7 +49,7 @@ const SinhVienAdmin = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await api().get("/giaovu/sinhvien");
+      const response = await api.get("/giaovu/sinhvien");
       setStudents(response.data);
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -58,7 +59,7 @@ const SinhVienAdmin = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa sinh viên này?")) {
       try {
-        await api().delete(`/giaovu/sinhvien/add/${id}`);
+        await api.delete(`/giaovu/sinhvien/add/${id}`);
         setStudents(students.filter((sv) => sv.idTaiKhoan !== id));
       } catch (error) {
         console.error("Error deleting student:", error);

@@ -3,11 +3,12 @@ import { Alert, Button, Form } from "react-bootstrap";
 import cookie from "react-cookies";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Apis, { api, endpoints } from "../../api";
+import Apis, { useApi, endpoints } from "../../api";
 import Footer from "../../component/Footer";
 import Header from "../../component/Header";
 
 const LoginAdmin = () => {
+    const api = useApi();
     const dispatch = useDispatch();
   const [username, setusername] = useState();
   const [password, setpassword] = useState();
@@ -26,10 +27,10 @@ const LoginAdmin = () => {
         });
         cookie.save("token", res.data.access_token);
         cookie.save("refresh_token", res.data.refresh_token);
-        let { data } = await api().get(endpoints["current-user"]);
+        let { data } = await api.get(endpoints["current-user"]);
         cookie.save("user", data);
         if (Array.from(data.chucVu).includes("GVU")) {
-          let sinhvien = await api().get("/giaovu/current-giaovu");
+          let sinhvien = await api.get("/giaovu/current-giaovu");
           cookie.save("giaovu", sinhvien.data);
           dispatch({
             type: "login_gvu",

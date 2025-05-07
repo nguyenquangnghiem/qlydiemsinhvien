@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api";
+import { useApi } from "../../api";
 import { useNavigate, useParams } from "react-router-dom";
 
 const ThemSuaMonHoc = () => {
 
+    const api = useApi();
     const { id } = useParams('id');
     const [student, setStudent] = useState(null);
     const navigate = useNavigate();
 
     async function getSinhVien(){
         try{
-            const response = await api().get(`/giaovu/monhoc/${id}`);
+            const response = await api.get(`/giaovu/monhoc/${id}`);
             console.log(response.data);
             setStudent(response.data);
             setFormData(prev => ({
@@ -41,7 +42,7 @@ const ThemSuaMonHoc = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/monhoc/add', formData);
+            await api.post('/giaovu/monhoc/add', formData);
             navigate('/giaovu/monhoc');
         }catch(e){
             console.error(e);

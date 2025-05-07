@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 
 const DanhSachSinhVien = () => {
-  const user = useSelector((state) => state.accountReducer);
-  const giangvien = useSelector((state) => state.giangVienReducer);
+    const api = useApi();
+  const keycloak = useContext(KeycloakContext);
+const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
   const [DSSinhVien, setDSSinhVien] = useState([]);
   const [q] = useSearchParams();
   const [kw, setKw] = useState("");
@@ -24,11 +25,11 @@ const DanhSachSinhVien = () => {
         if (monHocId !== null) {
           if (tenSinhVien !== null) {
             e = `${e}?monHocId=${monHocId}&tenSinhVien=${tenSinhVien}`;
-            let res = await api().post(e);
+            let res = await api.post(e);
             setDSSinhVien(res.data);
           } else {
             e = `${e}?monHocId=${monHocId}`;
-            let res = await api().post(e);
+            let res = await api.post(e);
             setDSSinhVien(res.data);
           }
         }
@@ -74,7 +75,7 @@ const DanhSachSinhVien = () => {
                   </Form>
                 </li>
                 <li class="nav-item gv-user-name-img ">
-                  {user === null || user.image === null ? (
+                  {keycloak === null || keycloak.image === null ? (
                     <a class="nav-link dark-color" href="#">
                       <i class="fa-solid fa-user icon-padding"></i>
                     </a>
@@ -82,7 +83,7 @@ const DanhSachSinhVien = () => {
                     <div class="info-user-image-3">
                       <img
                         class="img-user-avatar-header"
-                        src={user? user.image : ""}
+                        src={keycloak? keycloak.image : ""}
                         alt="Ảnh đại diện"
                       />
                     </div>
@@ -97,7 +98,7 @@ const DanhSachSinhVien = () => {
                     data-bs-toggle="dropdown"
                   >
                     Chào,
-                    {giangvien? giangvien.hoTen : ""}
+                    {roles.includes('GV')? keycloak.tokenParsed.ho_ten : ""}
                   </a>
                   <ul class="dropdown-menu">
                     <li>

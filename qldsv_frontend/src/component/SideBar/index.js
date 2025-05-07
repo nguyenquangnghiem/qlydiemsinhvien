@@ -1,24 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useContext } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { apiLogout } from "../../api";
+import { keycloakService } from "../Keycloak";
+import { KeycloakContext } from "../Keycloak/keycloakProvider";
 
 const SideBar = () => {
   const dispatch = useDispatch();
-  const giangvien = useSelector(state => state.giangVienReducer);
+  const keycloak = useContext(KeycloakContext);
+      const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
   async function logout() {
     try{
-      await apiLogout().post('/api/logout');
-      dispatch({type: "logout"});
-      dispatch({type: "logout_sv"});
-      dispatch({type: "logout_gv"});
+      keycloakService.logout();
     } catch(e){
       console.error(e);
     }
   }
 
   return (
-    <div class={(giangvien !== null? "gv-" : "") + "vertical-menu"}>
-      <div class={"active" + (giangvien !== null? "gv-" : "") +  + "logo-menu"}>
+    <div class={(roles.includes('GV')? "gv-" : "") + "vertical-menu"}>
+      <div class={"active" + (roles.includes('GV')? "gv-" : "") +  + "logo-menu"}>
         <Link to="/">
           <i class="fa-solid fa-book-open icon-padding "></i>Trường Đại Học Mở
         </Link>
@@ -31,7 +31,7 @@ const SideBar = () => {
         {/* <Link class="menu-item" to="/diendan">
           <i class="fa-solid fa-message icon-padding"></i>Diễn Đàn
         </Link> */}
-        {giangvien != null? 
+        {roles.includes('GV')? 
         <>
             <Link class="menu-item" to="/danhsachmonchuanbi">
             <i class="fa-solid fa-gift gv-icon-padding"></i>Môn Sắp Giảng Dạy

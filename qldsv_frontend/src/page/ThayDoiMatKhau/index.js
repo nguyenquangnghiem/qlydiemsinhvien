@@ -1,15 +1,16 @@
 import { useContext, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 import MySpinner from "../../component/MySpinner";
-import { useSelector } from "react-redux";
 
 const ThayDoiMatKhau = () => {
+    const api = useApi();
   const [loading, setLoading] = useState(false);
+  const keycloak = useContext(KeycloakContext);
   const [duplicatePass, setDuplicatePass] = useState(false);
   const [faild, setFaild] = useState(false);
   const [changeSuccess, setChangeSuccess] = useState(false);
-  const user = useSelector((state) => state.accountReducer);
   const [pass, setPass] = useState(true);
 
   const [taiKhoan, setTaiKhoan] = useState({
@@ -35,11 +36,11 @@ const ThayDoiMatKhau = () => {
       try {
         let formData = new FormData();
 
-        formData.append("tenTaiKhoan", user.tenTaiKhoan);
+        formData.append("tenTaiKhoan", keycloak?.tokenParsed?.preferred_username);
         formData.append("matKhau", taiKhoan.matKhau);
         formData.append("matKhauMoi", taiKhoan.matKhauMoi);
         setLoading(true);
-        await api().post(endpoints["changePassword"], formData);
+        await api.post(endpoints["changePassword"], formData);
         setChangeSuccess(true);
       } catch (e) {
         console.error(e);

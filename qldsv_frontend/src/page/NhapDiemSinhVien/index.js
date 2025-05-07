@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { useApi, endpoints } from "../../api";
 import MySpinner from "../../component/MySpinner";
 
 const NhapDiemSinhVien = () => {
+    const api = useApi();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showCotDiem1, setShowCotDiem1] = useState(false);
@@ -29,7 +30,7 @@ const NhapDiemSinhVien = () => {
         idDiem = q.get("idDiem");
         if (idDiem !== null) {
           e = `${e}?idMonHocDangKy=${idDiem}`;
-          let res = await api().post(e);
+          let res = await api.post(e);
           const updatedDiem = { ...diem };
           updatedDiem.DiemKT1 = res.data.diemKT1;
           updatedDiem.DiemKT2 = res.data.diemKT2;
@@ -64,7 +65,7 @@ const NhapDiemSinhVien = () => {
     const process = async () => {
       let form = new FormData();
       for (let field in diem) form.append(field, diem[field]);
-      let res = await api().post(endpoints["addDiem"], form);
+      let res = await api.post(endpoints["addDiem"], form);
       setLoading(true);
       if (res.status === 200) {
         nav(`/nhapdiem?monHocId=${idMonHoc}`);

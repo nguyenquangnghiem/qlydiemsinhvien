@@ -13,7 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -35,6 +35,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const GiangVienAdmin = () => {
+    const api = useApi();
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,7 +47,7 @@ const GiangVienAdmin = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await api().get("/giaovu/giangvien");
+      const response = await api.get("/giaovu/giangvien");
       setStudents(response.data);
     } catch (error) {
       console.error("Error fetching students:", error);
@@ -56,7 +57,7 @@ const GiangVienAdmin = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc muốn xóa giảng viên này?")) {
       try {
-        await api().delete(`/giaovu/giangvien/add/${id}`);
+        await api.delete(`/giaovu/giangvien/add/${id}`);
         setStudents(students.filter((sv) => sv.idTaiKhoan !== id));
       } catch (error) {
         console.error("Error deleting student:", error);

@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Spinner } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { api, endpoints } from "../../api";
+import { endpoints, useApi } from "../../api";
+import { KeycloakContext } from "../../component/Keycloak/keycloakProvider";
 import MySpinner from "../../component/MySpinner";
 import PDFGenerator from "../../component/PDFGenerator";
 
 const NhapDiem = () => {
-  const user = useSelector((state) => state.accountReducer);
-  const giangvien = useSelector((state) => state.giangVienReducer);
+    const api = useApi();
+  const keycloak = useContext(KeycloakContext);
+    const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
   const [DSSinhVien, setDSSinhVien] = useState([]);
   const [q] = useSearchParams();
   const fileDiem = useRef();
@@ -45,12 +46,12 @@ const NhapDiem = () => {
         if (monHocId !== null) {
           if (tenSinhVien !== null && tenSinhVien !== "") {
             e = `${e}?monHocId=${monHocId}&tenSinhVien=${tenSinhVien}`;
-            let res = await api().post(e);
+            let res = await api.post(e);
             setDSSinhVien(res.data);
             setCheckKhoaDiem(false);
           } else {
             e = `${e}?monHocId=${monHocId}`;
-            let res = await api().post(e);
+            let res = await api.post(e);
             setDSSinhVien(res.data);
             const data = res.data;
             const hasKhoaDiemZero = data.some(
@@ -94,7 +95,7 @@ const NhapDiem = () => {
       form.append("file", fileDiem.current.files[0]);
 
       setLoading(true);
-      let res = await api().post(endpoints["addListDiem"], form);
+      let res = await api.post(endpoints["addListDiem"], form);
     };
     if (fileDiem.current.files.length > 0) {
       if (isCSVFile(fileDiem.current.files[0])) {
@@ -118,7 +119,7 @@ const NhapDiem = () => {
       let e = endpoints["khoaDiem"];
       if (monHocId !== null) {
         e = `${e}?idMonHoc=${monHocId}`;
-        let res = await api().post(e);
+        let res = await api.post(e);
       }
     };
     const confirmed = window.confirm("Bạn có chắc muốn khóa điểm?");
@@ -134,14 +135,14 @@ const NhapDiem = () => {
       let e = endpoints["addCotDiem"];
       e = `${e}?idMonHoc=${monHocId}`;
       setAddDiemSV(true);
-      let res = await api().post(e);
+      let res = await api.post(e);
       if (res.data === "Fail") {
         setDeleAddDiemSV(false);
         const confirmed = window.confirm("Chỉ thêm được tối đa 3 cột điểm!!");
       } else {
         let a = endpoints["tinhDiemTB"];
         a = `${a}?idMonHoc=${monHocId}`;
-        let res = await api().post(a);
+        let res = await api.post(a);
         setAddDiemSV(false);
       }
     };
@@ -154,14 +155,14 @@ const NhapDiem = () => {
       let e = endpoints["deleteCotDiem"];
       e = `${e}?idMonHoc=${monHocId}`;
       setDeleAddDiemSV(true);
-      let res = await api().delete(e);
+      let res = await api.delete(e);
       if (res.data === "Fail") {
         setDeleAddDiemSV(false);
         const confirmed = window.confirm("Không xóa được!!");
       } else {
         let a = endpoints["tinhDiemTB"];
         a = `${a}?idMonHoc=${monHocId}`;
-        let res = await api().post(a);
+        let res = await api.post(a);
         setDeleAddDiemSV(false);
       }
     };
@@ -196,7 +197,7 @@ const NhapDiem = () => {
                   </Form>
                 </li>
                 <li class="nav-item gv-user-name-img ">
-                  {user === null? "" : user.image === null ? (
+                  {keycloak === null? "" : keycloak.image === null ? (
                     <a class="nav-link dark-color" href="#">
                       <i class="fa-solid fa-user icon-padding"></i>
                     </a>
@@ -204,7 +205,7 @@ const NhapDiem = () => {
                     <div class="info-user-image-3">
                       <img
                         class="img-user-avatar-header"
-                        src={user? user.image : ""}
+                        src={keycloak? keycloak.image : ""}
                         alt="Ảnh đại diện"
                       />
                     </div>
@@ -219,7 +220,7 @@ const NhapDiem = () => {
                     data-bs-toggle="dropdown"
                   >
                     Chào,
-                    {giangvien? giangvien.hoTen : ""}
+                    {keycloak? keycloak?.tokenParsed?.ho_ten : ""}
                   </a>
                   <ul class="dropdown-menu">
                     <li>

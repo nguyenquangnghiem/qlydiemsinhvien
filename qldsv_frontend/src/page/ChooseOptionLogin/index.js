@@ -10,14 +10,7 @@ const ChooseOptionLogin = () => {
     return(
         <>
             <div className="container--option">
-                <div className="box--option" onClick={() => navigate('/login-user')}>
-                    <PiStudentFill size={48} />
-                    <p>Đăng nhập cho giảng viên/sinh viên</p>
-                </div>
-                <div className="box--option" onClick={() => navigate('/login-admin')}>
-                    <RiAdminLine size={48} />
-                    <p>Đăng nhập cho quản trị viên</p>
-                </div>
+                
             </div>
         </>
     );

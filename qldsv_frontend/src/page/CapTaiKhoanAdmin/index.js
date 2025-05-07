@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { api } from "../../api";
+import { useApi } from "../../api";
 
 const CapTaiKhoanAdmin = () => {
 
+    const api = useApi();
     const [classList, setClassList] = useState([]);
 
     async function getLopHocList(){
         try{
-            const response = await api().get("/giaovu/giangvienchuacotaikhoan");
+            const response = await api.get("/giaovu/giangvienchuacotaikhoan");
             setClassList(response.data);
         }catch(e){
             console.error(e);
@@ -32,7 +33,7 @@ const CapTaiKhoanAdmin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            await api().post('/giaovu/taikhoan/dangki', formData);
+            await api.post('/giaovu/taikhoan/dangki', formData);
             window.alert("Cấp tài khoản thành công!!!")
         }catch(e){
             console.error(e);

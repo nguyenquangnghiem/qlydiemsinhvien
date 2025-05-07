@@ -13,7 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
-import { api } from "../../api";
+import { useApi } from "../../api";
   
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -35,6 +35,7 @@ import { api } from "../../api";
   }));
   
   const DanhSachSinhVienLop = () => {
+    const api = useApi();
     const [students, setStudents] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [lopHoc, setLopHoc] = useState(null);
@@ -48,7 +49,7 @@ import { api } from "../../api";
   
     const fetchStudents = async () => {
       try {
-        const response = await api().get(`/giaovu/sinhvien/lophoc/${id}`);
+        const response = await api.get(`/giaovu/sinhvien/lophoc/${id}`);
         setStudents(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -57,7 +58,7 @@ import { api } from "../../api";
 
     const fetchLopHoc = async () => {
       try{
-        const response = await api().get(`/giaovu/lophoc/${id}`)
+        const response = await api.get(`/giaovu/lophoc/${id}`)
         setLopHoc(response.data);
       }catch(e){
         console.error(e);
