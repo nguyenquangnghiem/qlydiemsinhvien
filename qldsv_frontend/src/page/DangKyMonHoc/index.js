@@ -33,7 +33,7 @@ const DangKyMonHoc = () => {
       let e = endpoints["listMonHocDangKi"];
       let formData = new FormData();
       formData.append("tenTaiKhoan", keycloak?.tokenParsed?.preferred_username);
-      formData.append("idTaiKhoan", keycloak?.tokenParsed?.jti);
+      formData.append("idTaiKhoan", keycloak?.tokenParsed?.sub);
       if (kw !== "") {
         formData.append("tenMonHoc", kw);
       }
@@ -47,7 +47,7 @@ const DangKyMonHoc = () => {
     try {
       //láy danh sách môn học sinh viene đangư ký
       let a = endpoints["listMonHocSVDangKy"];
-      a = `${a}?idSinhVien=${keycloak.tokenParsed.jti}`;
+      a = `${a}?idSinhVien=${keycloak.tokenParsed.sub}`;
       let res2 = await api.get(a);
       setMonHocDangKy(res2.data);
     } catch (ex) {
@@ -59,10 +59,10 @@ const DangKyMonHoc = () => {
     evt.preventDefault();
     const process = async () => {
       let e = endpoints["dangKyMonHoc"];
-      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.jti}&IdMonHoc=${idMonHoc}`;
+      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.sub}&IdMonHoc=${idMonHoc}`;
       let res = await api.post(e, {
         idMonHoc: idMonHoc,
-        idSinhVien: keycloak?.tokenParsed?.jti,
+        idSinhVien: keycloak?.tokenParsed?.sub,
       });
       e = endpoints["getMonHocById"] + `?idMonHocHocKy=${idMonHoc}`;
       await api.get(e);
@@ -79,7 +79,7 @@ const DangKyMonHoc = () => {
     evt.preventDefault();
     const process = async () => {
       let e = endpoints["huyDangKyMonHoc"];
-      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.jti}&IdMonHoc=${idMonHoc}`;
+      e = `${e}?IdSinhVien=${keycloak?.tokenParsed?.sub}&IdMonHoc=${idMonHoc}`;
       let res = await api.delete(e);
 
       setSuccess(true);
@@ -125,7 +125,7 @@ const DangKyMonHoc = () => {
         order_id,
         transactionNo,
         trans_date,
-        idSinhVien: keycloak?.tokenParsed?.jti,
+        idSinhVien: keycloak?.tokenParsed?.sub,
       };
 
       api.post("/api/queryTransactionStatus/", null, {

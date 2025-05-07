@@ -18,7 +18,7 @@ const DanhSachMonDaHoc = () => {
                 let d = endpoints['DSDiemDaHoc'];
 
 
-                d = `${d}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
+                d = `${d}?SinhVienId=${keycloak?.tokenParsed?.sub}`;
 
                 let res5 = await api.get(d);
 

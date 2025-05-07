@@ -80,12 +80,12 @@ const DienDan = () => {
                                 <i class="fa-solid fa-comment-dots icon-padding"></i>Xem Câu
                                 Trả Lời
                             </Link>
-                            {keycloak?.tokenParsed?.jti === c?.taiKhoan?.id ? (
+                            {keycloak?.tokenParsed?.sub === c?.taiKhoan?.id ? (
                                 <Link to={k} class="text-contend-link update-text-diendan">
                                     <i class="fa-solid fa-pen-to-square icon-padding"></i>Chỉnh Sửa
                                 </Link>
                             ) : null}
-                            {keycloak?.tokenParsed?.jti === c?.taiKhoan?.id ? (
+                            {keycloak?.tokenParsed?.sub === c?.taiKhoan?.id ? (
                                 <a style={{cursor: 'pointer'}} onClick={() => handleDelete(c.idCauHoiDienDan)} class="text-contend-link update-text-diendan">
                                     <i class="fa-solid fa-trash icon-padding"></i>Xóa
                                 </a>

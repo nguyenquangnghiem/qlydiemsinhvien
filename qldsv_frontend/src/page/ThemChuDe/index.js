@@ -40,7 +40,7 @@ const Themchude = () => {
             try {
                 let res = await api.post(endpoints['themCauHoi'], {
                     "noiDungCauHoi": noiDung,
-                    "idTaiKhoan": keycloak?.tokenParsed?.jti,
+                    "idTaiKhoan": keycloak?.tokenParsed?.sub,
                     "ngayTao": `${formattedDate} ${formattedTime}`,
                     "idCauHoiDienDan": cauhoiid,
                 })

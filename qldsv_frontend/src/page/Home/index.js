@@ -5,6 +5,7 @@ import HomeSV from "../HomeSV";
 
 const Home = () => {
     const keycloak = useContext(KeycloakContext);
+    console.log(keycloak);
     const roles = keycloak?.tokenParsed?.resource_access[keycloak?.tokenParsed?.azp]?.roles || [];
     return (
         <>

@@ -36,7 +36,7 @@ const ThayDoiMatKhauAdmin = () => {
             <input
               type="hidden"
               {...register("idTaiKhoan")}
-              value={keycloak?.tokenParsed?.jti || ""}
+              value={keycloak?.tokenParsed?.sub || ""}
             />
     
             <div className="mb-3 mt-3">

@@ -16,9 +16,9 @@ const HomeSV = () => {
                 let e = endpoints['DSDiemTrungBinhHocKy'];
                 let a = endpoints['DiemTrungBinhHe10'];
                 let b = endpoints['DiemTrungBinhHe4'];
-                e = `${e}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
-                a = `${a}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
-                b = `${b}?SinhVienId=${keycloak?.tokenParsed?.jti}`;
+                e = `${e}?SinhVienId=${keycloak?.tokenParsed?.sub}`;
+                a = `${a}?SinhVienId=${keycloak?.tokenParsed?.sub}`;
+                b = `${b}?SinhVienId=${keycloak?.tokenParsed?.sub}`;
                 let res1 = await api.get(e);
                 let res2 = await api.get(a);
                 let res3 = await api.get(b);

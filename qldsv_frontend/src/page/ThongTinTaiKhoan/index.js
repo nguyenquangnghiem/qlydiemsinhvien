@@ -22,7 +22,7 @@ const Thongtintaikhoan = () => {
 
 
     const [taiKhoan, setTaiKhoan] = useState({
-        "idTaiKhoan": keycloak?.tokenParsed?.jti || null,
+        "idTaiKhoan": keycloak?.tokenParsed?.sub || null,
         "tenTaiKhoan": keycloak?.tokenParsed?.preferred_username || null,
         "matKhau": null,
         "chucVu": roles[0],

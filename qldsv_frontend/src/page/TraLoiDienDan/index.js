@@ -55,7 +55,7 @@ const TraLoiDienDan = () => {
                 let cauHoiId = q.get("cauhoiId");
                 let res = await api.post(endpoints['themTraLoi'], {
                     "noiDungTraLoi": noiDung,
-                    "idTaiKhoan": keycloak?.tokenParsed?.jti,
+                    "idTaiKhoan": keycloak?.tokenParsed?.sub,
                     "idCauHoiDienDan": cauHoiId
                 })
             } catch (ex) {

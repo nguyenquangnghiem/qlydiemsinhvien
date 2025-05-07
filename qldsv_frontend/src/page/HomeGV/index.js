@@ -13,7 +13,7 @@ const HomeGV = () => {
     const loadMonHoc = async () => {
       try {
         let e = endpoints["monHocIdTK"];
-        e = `${e}?taiKhoanId=${keycloak === null ? "" : keycloak?.tokenParsed?.jti}`;
+        e = `${e}?taiKhoanId=${keycloak === null ? "" : keycloak?.tokenParsed?.sub}`;
         let res = await api.get(e);
         setMonHoc(res.data);
       } catch (e) { 

@@ -13,7 +13,7 @@ const DanhSachMonChuaDay = () => {
     const loadMonHoc = async () => {
       try {
         let e = endpoints["DSMHChuaDay"];
-        e = `${e}?taiKhoanId=${keycloak === null ? "" : keycloak?.tokenParsed?.jti}`;
+        e = `${e}?taiKhoanId=${keycloak === null ? "" : keycloak?.tokenParsed?.sub}`;
         let res = await api.get(e);
         console.log(res.data);
         setMonHoc(res.data);
